@@ -135,7 +135,6 @@ void Delay_not_dumbAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mid
     ScopedNoDenormals noDenormals;
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
-	raw_volume = .015;
 
     // In case we have more outputs than inputs, this code clears any output
     // channels that didn't contain input data, (because these aren't
@@ -157,7 +156,7 @@ void Delay_not_dumbAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mid
         auto* channelData = buffer.getWritePointer (channel);
 
 		for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
-			channelData[sample] = buffer.getSample(channel, sample) * raw_volume;
+			channelData[sample] = buffer.getSample(channel, sample);
 		}
         // ..do something to the data...
     }
