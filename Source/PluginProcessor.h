@@ -10,6 +10,8 @@
 
 #pragma once
 
+#define GAIN_ID "gain"
+#define GAIN_NAME "Gain"
 #include "../JuceLibraryCode/JuceHeader.h"
 
 
@@ -56,6 +58,9 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 	double raw_volume;
+	AudioProcessorValueTreeState state_tree;
+	float previous_gain;
+
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Delay_not_dumbAudioProcessor)

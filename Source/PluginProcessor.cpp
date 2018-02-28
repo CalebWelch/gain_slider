@@ -22,9 +22,14 @@ Delay_not_dumbAudioProcessor::Delay_not_dumbAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ),
+//					   raw_volume(-5.0f),
+					   state_tree(*this, nullptr)
 #endif
 {
+	NormalisableRange<float> gain_range(-48.0f, 0.0f);
+	state_tree.createAndAddParameter(GAIN_ID, GAIN_NAME, GAIN_NAME, gain_range, 0.5f, nullptr, nullptr);
+	state_tree.state = ValueTree("saved_params");
 }
 
 Delay_not_dumbAudioProcessor::~Delay_not_dumbAudioProcessor()
@@ -98,6 +103,7 @@ void Delay_not_dumbAudioProcessor::prepareToPlay (double sampleRate, int samples
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+	previous_gain = 
 }
 
 void Delay_not_dumbAudioProcessor::releaseResources()
@@ -156,7 +162,7 @@ void Delay_not_dumbAudioProcessor::processBlock (AudioBuffer<float>& buffer, Mid
         auto* channelData = buffer.getWritePointer (channel);
 
 		for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
-			channelData[sample] = buffer.getSample(channel, sample);
+			channelData[sample] = buffer.getSample(channel, sample) * raw_volume;
 		}
         // ..do something to the data...
     }
@@ -179,12 +185,21 @@ void Delay_not_dumbAudioProcessor::getStateInformation (MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+	ScopedPointer <XmlElement> xml(state_tree.state.createXml());
+	copyXmlToBinary(*xml, destData);
 }
 
 void Delay_not_dumbAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+	ScopedPointer <XmlElement> xml(getXmlFromBinary(data, sizeInBytes));
+
+	if (xml != nullptr) {
+		if (xml->hasTagName(state_tree.state.getType())){
+			state_tree.state = ValueTree::fromXml(*xml);
+		}
+	}
 }
 
 //==============================================================================
