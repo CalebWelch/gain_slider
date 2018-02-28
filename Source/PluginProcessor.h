@@ -60,7 +60,6 @@ public:
 	double raw_volume;
 	AudioProcessorValueTreeState state_tree;
 	float previous_gain;
-
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Delay_not_dumbAudioProcessor)

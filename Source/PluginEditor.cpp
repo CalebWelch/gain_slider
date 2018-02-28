@@ -50,7 +50,7 @@ void Delay_not_dumbAudioProcessorEditor::resized()
 void Delay_not_dumbAudioProcessorEditor::sliderValueChanged(Slider *slider) {
 	
 	if (slider == &gainSlider){
-		processor.raw_volume = pow(10, gainSlider.getValue() / 20);
+		//processor.raw_volume = pow(10, gainSlider.getValue() / 20);
 	}
 
 }
